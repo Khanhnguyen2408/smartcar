@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:smartcar/dia_diem/map_screen_hai_phong.dart';
+import 'package:smartcar/dia_diem/map_screen_thai_nguyen.dart';
 import 'package:smartcar/main.dart';
+
+import 'dia_diem/map_screen_nam_dinh.dart';
+import 'history.dart';
 class MapScreen extends StatefulWidget {
   @override
   State<MapScreen> createState() => _MapScreenState(); // tao bien state để lưu vị trí ban đầu local
@@ -16,6 +22,7 @@ class _MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
   double _originLatitude = 20.9802208, _originLongitude = 105.8389601;
   double _destLatitude = 20.4375965, _destLongitude = 106.1499026;
+  int _selectedIdex = 0; //dung de chuyen trang thai trong thanh Gnav
   final String _apiKey='AIzaSyAb_jZ05qokcR-U4RAYpwNeHJoXyRyBjYI';
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
@@ -51,6 +58,13 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.green,
+          title: const Center(
+              child: Text('Smart Car', style: TextStyle(fontSize: 30,color: Colors.white),)
+          ),
+        ),
         body: Stack(
           children: [
             Positioned.fill(
@@ -84,8 +98,64 @@ class _MapScreenState extends State<MapScreen> {
               ),
             )
           ],
-        )
+        ),
+      bottomNavigationBar:
+      Container(
+        color: Colors.green,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 15),
+          child: GNav(
+              gap: 10,
+              padding: EdgeInsets.all(8),
+              onTabChange: (index){
+                _onItemTapped(index,context);
+
+              },
+              backgroundColor: Colors.green,
+              color: Colors.white,
+              activeColor: Colors.white,
+              tabBackgroundColor: Colors.green.shade300,
+              tabs:[
+                GButton(
+                    icon: Icons.home,
+                    text: 'Home',
+                ),
+                GButton(
+                    icon: Icons.favorite_border,
+                    text: 'History',
+                ),
+                GButton(
+                    icon: Icons.search,
+                    text: 'Search',
+                ),
+              ]
+          ),
+        ),
+      ),
     );
+  }
+}
+// viết 1 hàm để chuyển thanh khi nhấn Gnav
+void _onItemTapped (int index,BuildContext context ){
+  switch(index){
+    case 0:
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context)=>MapScreen3())
+      );
+      break;
+    case 1:
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context)=>RealTimeCRUDEdatabase())
+      );
+      break;
+    case 2:
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context)=>MapScreen1())
+      );
+      break;
   }
 }
 

@@ -4,16 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:smartcar/map_screen.dart';
 import 'detailscreen.dart';
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+Future<void> main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MaterialApp(
     home: SafeArea(
         child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.green,
-            title: const Center(
-                child: Text('Smart Car', style: TextStyle(fontSize: 30,color: Colors.white),)
-            ),
-          ),
           body: MapScreen(),
         )
     ),

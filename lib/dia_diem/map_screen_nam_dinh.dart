@@ -1,15 +1,15 @@
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:smartcar/main.dart';
-
+import 'package:firebase_database/firebase_database.dart';
 import '../map_screen.dart';
 class MapScreen1 extends StatefulWidget {
   @override
   State<MapScreen1> createState() => _MapScreenState(); // tao bien state để lưu vị trí ban đầu local
   static const _initialCameraPosition = CameraPosition(
       target: LatLng(21.0227384, 105.8163641),// kinh độ vĩ độ của thành phố đc chọn
-      zoom: 8 //độ zoom ban đầu
+      zoom: 8, //độ zoom ban đầu
   );
 }
 class _MapScreenState extends State<MapScreen1> {
@@ -18,19 +18,49 @@ class _MapScreenState extends State<MapScreen1> {
   late GoogleMapController mapController;
   double _originLatitude = 20.9802208, _originLongitude = 105.8389601;
   double _destLatitude = 20.4375965, _destLongitude = 106.1499026;
+  double nowLatitude =0.0, nowLongitude = 0.0; // để lưu vị trí hiện tại
   final String _apiKey='AIzaSyAb_jZ05qokcR-U4RAYpwNeHJoXyRyBjYI';
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
   Map<PolylineId, Polyline> polylines = {};
-  Map<MarkerId, Marker> markers = {}; // hê
+  Map<MarkerId, Marker> markers = {};
+  //we read data on firebase
+  //b1 khai bao bien lưu
+  final database=FirebaseDatabase.instance.ref('vi tri');
+  Future <void> fectchData() async{
+    DatabaseEvent event =await database.once();
+    final data = event.snapshot.value as Map<dynamic,dynamic>;
+    setState(() {
+      nowLatitude = _convertToDouble(data["latitude"]) ;
+      nowLongitude = _convertToDouble(data["longtitude"]);
+      addMarker(LatLng(nowLatitude, nowLongitude), "now",
+          BitmapDescriptor.defaultMarkerWithHue(200));
+    });
+  }
+  double _convertToDouble(dynamic value) {
+    if (value is double) {
+      return value;
+    } else if (value is int) {
+      return value.toDouble();
+    } else if (value is String) {
+      return double.tryParse(value) ?? 0.0;
+    } else {
+      // Xử lý trường hợp giá trị không phải là một kiểu dữ liệu mong muốn
+      print("Value is not a valid type for conversion to double.");
+      return 0.0;
+    }
+  }
   void _onMapCreated(GoogleMapController controller) async {
     mapController = controller;
   }
-  void addMarker(LatLng position, String id, BitmapDescriptor descriptor) {
+  void addMarker(LatLng position, String id, BitmapDescriptor descriptor){
     MarkerId markerId = MarkerId(id);
     Marker marker =
     Marker(markerId: markerId, icon: descriptor, position: position);
-    markers[markerId] = marker;
+    setState(() {
+      markers[markerId] = marker;
+    });
+
   }
   void addPolyLine() {
     PolylineId id = PolylineId("poly");
@@ -64,6 +94,7 @@ class _MapScreenState extends State<MapScreen1> {
   void initState() {
     super.initState();
     getPolypoints();
+    fectchData();
     addMarker(LatLng(_originLatitude, _originLongitude), "origin",
         BitmapDescriptor.defaultMarker);
     addMarker(LatLng(_destLatitude, _destLongitude), "destination",
@@ -81,7 +112,7 @@ class _MapScreenState extends State<MapScreen1> {
                 // lưu vị trí của nó vào vị trí ban đầu
                 polylines: Set<Polyline>.of(polylines.values),
                 onMapCreated: _onMapCreated,
-                markers: Set<Marker>.of(markers.values),
+                markers: markers.values.toSet(),
               ),
             ),
             Positioned(
@@ -148,11 +179,13 @@ class order extends StatefulWidget{
     return order2State();
   }
 }
+final databaseReference = FirebaseDatabase.instance.ref("Nam Dinh");
+final databaseHis = FirebaseDatabase.instance.ref("His"); // để lưu những nhà xe đã đặt xe
 class order2State extends State<order>{
   String? selectedItem1;
   String? selectedItem2;
-  String quantity='';
-  String sdt='';
+  final TextEditingController quantity=TextEditingController();
+  final  TextEditingController sdt=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -219,10 +252,7 @@ class order2State extends State<order>{
                   child:Padding(
                     padding: EdgeInsets.all(8.0),
                     child: TextField(
-                      onChanged: (newquantity){
-                        print(newquantity);
-                        quantity=newquantity;
-                      },
+                      controller: quantity,
                       keyboardType: TextInputType.number,
                       style: TextStyle(
                           fontSize: 25
@@ -241,10 +271,7 @@ class order2State extends State<order>{
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: TextField(
-                onChanged: (newstd){
-                  print(newstd);
-                  sdt=newstd;
-                },
+               controller: sdt,
                 keyboardType: TextInputType.number,
                 style: TextStyle(
                     fontSize: 25
@@ -271,6 +298,19 @@ class order2State extends State<order>{
                 right: 10,
                 child: ElevatedButton(
                     onPressed: (){
+                      //push data in firebase realtime database
+                      final id = DateTime.now().millisecondsSinceEpoch.toString();
+                      databaseReference.child(id).set({
+                        'quantity':quantity.text.toString(),
+                        'sdt':sdt.text.toString(),
+                        'id':id,
+                        'nha xe':selectedItem1.toString(),
+                        'gio':selectedItem2.toString()
+                      });
+                      databaseHis.child(id).set({
+                        'nha xe':selectedItem1.toString(),
+                        'quantity': 'Nam Dinh'
+                      });
                       Navigator.push(context, MaterialPageRoute(builder: (context)=>MapScreen()));
                     },
                     style: ElevatedButton.styleFrom(
