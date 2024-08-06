@@ -22,7 +22,7 @@ class _MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
   double _originLatitude = 20.9802208, _originLongitude = 105.8389601;
   double _destLatitude = 20.4375965, _destLongitude = 106.1499026;
-  int _selectedIdex = 0; //dung de chuyen trang thai trong thanh Gnav
+
   final String _apiKey='AIzaSyAb_jZ05qokcR-U4RAYpwNeHJoXyRyBjYI';
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
@@ -55,6 +55,7 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,11 +106,11 @@ class _MapScreenState extends State<MapScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 15),
           child: GNav(
+              // selectedIndex: _selectedIndex,
               gap: 10,
               padding: EdgeInsets.all(8),
               onTabChange: (index){
                 _onItemTapped(index,context);
-
               },
               backgroundColor: Colors.green,
               color: Colors.white,
@@ -117,16 +118,16 @@ class _MapScreenState extends State<MapScreen> {
               tabBackgroundColor: Colors.green.shade300,
               tabs:[
                 GButton(
-                    icon: Icons.home,
-                    text: 'Home',
+                  icon: Icons.home,
+                  text: 'Home',
                 ),
                 GButton(
-                    icon: Icons.favorite_border,
-                    text: 'History',
+                  icon: Icons.favorite_border,
+                  text: 'History',
                 ),
                 GButton(
-                    icon: Icons.search,
-                    text: 'Search',
+                  icon: Icons.search,
+                  text: 'Search',
                 ),
               ]
           ),
@@ -135,25 +136,25 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 }
-// viết 1 hàm để chuyển thanh khi nhấn Gnav
+// ham de hien ra khi nhan Gnav
 void _onItemTapped (int index,BuildContext context ){
   switch(index){
     case 0:
       Navigator.push(
           context,
-          MaterialPageRoute(builder: (context)=>MapScreen3())
+          MaterialPageRoute(builder: (context)=>MapScreen())
       );
       break;
     case 1:
       Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context)=>RealTimeCRUDEdatabase())
+          context,
+          MaterialPageRoute(builder: (context)=>RealTimeCRUDEdatabase())
       );
       break;
     case 2:
       Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context)=>MapScreen1())
+          context,
+          MaterialPageRoute(builder: (context)=>MapScreen1())
       );
       break;
   }

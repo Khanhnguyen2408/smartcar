@@ -3,6 +3,9 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'dia_diem/map_screen_nam_dinh.dart';
+import 'map_screen.dart';
 // lấy dữ liệu từ trên firebase để hiện lên trên thành list
 class RealTimeCRUDEdatabase extends StatefulWidget {
   const RealTimeCRUDEdatabase({super.key});
@@ -11,6 +14,7 @@ class RealTimeCRUDEdatabase extends StatefulWidget {
 }
 final databaseReference = FirebaseDatabase.instance.ref("His");
 class _RealTimeDatabaseState extends State<RealTimeCRUDEdatabase>{
+  int _selectedIndex =1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +27,7 @@ class _RealTimeDatabaseState extends State<RealTimeCRUDEdatabase>{
         ),
       ),
       body: Column(children: [
-      // now we read data in realtime database 
+      // now we read data in realtime database
          Expanded(child:FirebaseAnimatedList(
                query: databaseReference,
                itemBuilder: (context, snapshot, animation, index){
@@ -57,7 +61,61 @@ class _RealTimeDatabaseState extends State<RealTimeCRUDEdatabase>{
          ),
       ],
       ),
+      bottomNavigationBar:
+      Container(
+        color: Colors.green,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 15),
+          child: GNav(
+              selectedIndex: _selectedIndex,
+              gap: 10,
+              padding: EdgeInsets.all(8),
+              onTabChange: (index){
+                _onItemTapped(index,context);
+              },
+              backgroundColor: Colors.green,
+              color: Colors.white,
+              activeColor: Colors.white,
+              tabBackgroundColor: Colors.green.shade300,
+              tabs:[
+                GButton(
+                  icon: Icons.home,
+                  text: 'Home',
+                ),
+                GButton(
+                  icon: Icons.favorite_border,
+                  text: 'History',
+                ),
+                GButton(
+                  icon: Icons.search,
+                  text: 'Search',
+                ),
+              ]
+          ),
+        ),
+      ),
     );
   }
-
+}
+void _onItemTapped (int index,BuildContext context ){
+  switch(index){
+    case 0:
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context)=>MapScreen())
+      );
+      break;
+    case 1:
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context)=>RealTimeCRUDEdatabase())
+      );
+      break;
+    case 2:
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context)=>MapScreen1())
+      );
+      break;
+  }
 }
