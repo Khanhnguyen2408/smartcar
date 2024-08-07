@@ -183,6 +183,8 @@ class order2State extends State<order>{
   String? selectedItem2;
   final TextEditingController quantity =TextEditingController();
   final  TextEditingController sdt =TextEditingController();
+  var _sdtInvl = false; //xet xem so dien thoai co chuan khong
+  var _sdtErr = "Số điện thoại không hợp lệ";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -275,6 +277,7 @@ class order2State extends State<order>{
                 ),
                 decoration: InputDecoration(
                     labelText: 'Số điện thoại',
+                    errorText: _sdtInvl ? _sdtErr : null,
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)
                     )
@@ -307,7 +310,7 @@ class order2State extends State<order>{
                         'nha xe':selectedItem1.toString(),
                         'quantity':'Hai Phong'
                       });
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>MapScreen()));
+                      onClick();
                     },
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromRGBO(43, 174, 102, 1),
@@ -322,5 +325,17 @@ class order2State extends State<order>{
           ]
       ),
     );
+  }
+  void onClick(){
+    setState(() {
+      if(sdt.text.length==10 && sdt.text.startsWith('0')){
+        _sdtInvl = false;
+      }else{
+        _sdtInvl = true;
+      }
+      if(_sdtInvl==false){
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>MapScreen()));
+      }
+    });
   }
 }

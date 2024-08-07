@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartcar/map_screen.dart';
+import 'package:firebase_database/firebase_database.dart';
 class MyLoginScreen extends StatefulWidget{
   const MyLoginScreen ({super.key});
   @override
@@ -10,6 +11,7 @@ class _MyLoginScreen extends State<MyLoginScreen>{
   //hai bien nay de luu du lieu username va password
   final TextEditingController username =new TextEditingController();
   final TextEditingController password =new TextEditingController();
+  final databaseReference = FirebaseDatabase.instance.ref("Login"); // tao bien tham chieu truyen len firebase realtime database
   var _usernameErr = "Tai khoản khong hợp le";
   var _passwordErr = "Mat khau khong hop le ";
   var _userInvl = false;
@@ -109,6 +111,11 @@ class _MyLoginScreen extends State<MyLoginScreen>{
         _passInvl = true;
       }
       if(_userInvl==false && _passInvl==false){
+        final id = DateTime.now().millisecondsSinceEpoch.toString();
+        databaseReference.child(id).set({
+          'SDT':username.text.toString(),
+          'email':password.text.toString()
+        });
         Navigator.push(context, MaterialPageRoute(builder: (context)=>MapScreen()));
       }
     });

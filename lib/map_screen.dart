@@ -126,8 +126,8 @@ class _MapScreenState extends State<MapScreen> {
                   text: 'History',
                 ),
                 GButton(
-                  icon: Icons.search,
-                  text: 'Search',
+                  icon: Icons.person,
+                  text: 'Information',
                 ),
               ]
           ),
@@ -154,7 +154,7 @@ void _onItemTapped (int index,BuildContext context ){
     case 2:
       Navigator.push(
           context,
-          MaterialPageRoute(builder: (context)=>MapScreen1())
+          MaterialPageRoute(builder: (context)=>MapScreen())
       );
       break;
   }
