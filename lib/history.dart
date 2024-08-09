@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'dia_diem/map_screen_nam_dinh.dart';
+import 'package:smartcar/login.dart';
 import 'map_screen.dart';
 // lấy dữ liệu từ trên firebase để hiện lên trên thành list
 class RealTimeCRUDEdatabase extends StatefulWidget {
@@ -12,6 +12,7 @@ class RealTimeCRUDEdatabase extends StatefulWidget {
   @override
   State<RealTimeCRUDEdatabase> createState() => _RealTimeDatabaseState();
 }
+//tao bien luu du lieu tu database ve
 final databaseReference = FirebaseDatabase.instance.ref("His");
 class _RealTimeDatabaseState extends State<RealTimeCRUDEdatabase>{
   int _selectedIndex =1;
@@ -23,7 +24,7 @@ class _RealTimeDatabaseState extends State<RealTimeCRUDEdatabase>{
         automaticallyImplyLeading: false,
       backgroundColor: Colors.green,
       title: const Center(
-          child: Text('Smart Car', style: TextStyle(fontSize: 30,color: Colors.white),)
+          child: Text('History', style: TextStyle(fontSize: 30,color: Colors.white),)
         ),
       ),
       body: Column(children: [
@@ -83,12 +84,12 @@ class _RealTimeDatabaseState extends State<RealTimeCRUDEdatabase>{
                   text: 'Home',
                 ),
                 GButton(
-                  icon: Icons.favorite_border,
+                  icon: Icons.history,
                   text: 'History',
                 ),
                 GButton(
-                  icon: Icons.search,
-                  text: 'Search',
+                  icon: Icons.logout,
+                  text: 'Log Out',
                 ),
               ]
           ),
@@ -112,10 +113,41 @@ void _onItemTapped (int index,BuildContext context ){
       );
       break;
     case 2:
-      Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context)=>MapScreen1())
-      );
+      _showLogoutDialog(context);
       break;
   }
 }
+void _showLogoutDialog(BuildContext context){
+  showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: Text('Xác nhận'),
+          content: Text('Bạn có chắc chắn muốn đăng xuất không '),
+          actions: [
+            TextButton(
+                onPressed: (){
+                  Navigator.of(context).pop(); // dong dialog
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context)=>MapScreen())
+                  );
+                },
+                child: Text('Hủy')
+            ),
+            TextButton(
+                onPressed: (){
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context)=>MyLoginScreen())
+                  );
+                },
+                child: Text('Đăng xuất')
+            )
+          ],
+        );
+      }
+  );
+}
+

@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:smartcar/dia_diem/map_screen_hai_phong.dart';
-import 'package:smartcar/dia_diem/map_screen_thai_nguyen.dart';
+import 'package:smartcar/login.dart';
 import 'package:smartcar/main.dart';
-
-import 'dia_diem/map_screen_nam_dinh.dart';
 import 'history.dart';
 class MapScreen extends StatefulWidget {
   @override
@@ -122,12 +119,12 @@ class _MapScreenState extends State<MapScreen> {
                   text: 'Home',
                 ),
                 GButton(
-                  icon: Icons.favorite_border,
+                  icon: Icons.history,
                   text: 'History',
                 ),
                 GButton(
-                  icon: Icons.person,
-                  text: 'Information',
+                  icon: Icons.logout,
+                  text: 'Log out',
                 ),
               ]
           ),
@@ -152,12 +149,42 @@ void _onItemTapped (int index,BuildContext context ){
       );
       break;
     case 2:
-      Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context)=>MapScreen())
-      );
+      _showLogoutDialog(context);
       break;
   }
 }
 
+void _showLogoutDialog(BuildContext context){
+  showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: Text('Xác nhận'),
+          content: Text('Bạn có chắc chắn muốn đăng xuất không '),
+          actions: [
+            TextButton(
+                onPressed: (){
+                  Navigator.of(context).pop();// dong dialog
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context)=>MapScreen())
+                  );
+                },
+                child: Text('Hủy')
+            ),
+            TextButton(
+                onPressed: (){
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context)=>MyLoginScreen())
+                  );
+                },
+                child: Text('Đăng xuất')
+            )
+          ],
+        );
+      }
+  );
+}
 

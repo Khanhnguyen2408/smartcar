@@ -2,7 +2,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:smartcar/login.dart';
 import 'package:smartcar/map_screen.dart';
 import 'detailscreen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -18,7 +17,7 @@ class MyApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MyLoginScreen(),
+      home: MapScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -29,7 +28,6 @@ class HomeScreen extends StatefulWidget{
   State<HomeScreen> createState()=>_HomeScreenState();
 }
 class _HomeScreenState extends State<HomeScreen>{
-  int _selectedIndex =0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
