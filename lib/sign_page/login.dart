@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:smartcar/global/common/toast.dart';
 import 'package:smartcar/map_screen.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smartcar/auth/auth.dart';
+import 'package:smartcar/sign_page/signup.dart';
+
+import '../main.dart';
 class MyLoginScreen extends StatefulWidget{
   const MyLoginScreen ({super.key});
   @override
   State<MyLoginScreen> createState() => _MyLoginScreen();
 }
 class _MyLoginScreen extends State<MyLoginScreen>{
-  bool _isShowOn = true;
+  final FirebaseAuthService _auth = FirebaseAuthService();
+  bool _isLogin = false; // bien nay de xuat hien vòng tron khi nhan login
+  bool _isShowOn = true;// bien nay de xem co hien password khong
   //hai bien nay de luu du lieu username va password
-  final TextEditingController username =new TextEditingController();
-  final TextEditingController password =new TextEditingController();
-  final databaseReference = FirebaseDatabase.instance.ref("Login"); // tao bien tham chieu truyen len firebase realtime database
-  var _usernameErr = "Tai khoản khong hợp le";
-  var _passwordErr = "Mat khau khong hop le ";
-  var _userInvl = false;
-  var _passInvl = false;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  @override
+  void dispose(){
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
    return Scaffold(
@@ -34,13 +42,12 @@ class _MyLoginScreen extends State<MyLoginScreen>{
            Padding(
              padding: const EdgeInsets.only(bottom: 20),
              child: TextField(
-               controller: username,
+               controller: emailController,
                keyboardType: TextInputType.text,
                style: TextStyle(fontSize: 19,color: Colors.black),
                decoration: InputDecoration(
-                   labelText: 'USERNAME',
+                   labelText: 'EMAIL',
                    labelStyle: TextStyle(color: Colors.grey,fontSize: 15),
-                   errorText: _userInvl ? _usernameErr : null
                ),
              ),
            ),
@@ -50,14 +57,13 @@ class _MyLoginScreen extends State<MyLoginScreen>{
                  alignment: AlignmentDirectional.centerEnd,
                  children:[
                    TextField(
-                     controller: password,
+                     controller: passwordController,
                      keyboardType: TextInputType.text,
                      style: TextStyle(fontSize: 19,color: Colors.black),
                      obscureText: _isShowOn,
                      decoration: InputDecoration(
                          labelText: 'PASSWORD',
                          labelStyle: TextStyle(color: Colors.grey,fontSize: 15),
-                         errorText: _passInvl ? _passwordErr : null
                      ),
                    ),
                    GestureDetector(// giup bat tat show password
@@ -76,7 +82,7 @@ class _MyLoginScreen extends State<MyLoginScreen>{
              height: 56,
              child: ElevatedButton(
                 onPressed: (){
-                  onClicked();
+                  _signIn();
                 },
                  style: ElevatedButton.styleFrom(
                    backgroundColor: Colors.green,
@@ -85,39 +91,42 @@ class _MyLoginScreen extends State<MyLoginScreen>{
                      borderRadius: BorderRadius.circular(20)
                    )
                  ),
-               child: Text('SIGN IN',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: Colors.white),),
+               child: _isLogin ? CircularProgressIndicator(color: Colors.white,) : Text('SIGN IN',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: Colors.white),),
              ),
            ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('Notes: username is phone number and password is email',style: TextStyle(fontSize: 15,color: Colors.grey),),
+          SizedBox(height: 20,),
+          Row(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Don't have an account?"),
+              SizedBox(width: 5,),
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> SignUpScreen()));
+                },
+                child: Text("Sign Up",style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold),),
+              )
+            ],
           )
          ],
        ),
      ),
    );
   }
-  //khi nguoi dung an vao sign in
-  void onClicked(){
+  void _signIn() async{
     setState(() {
-      if(username.text.length==10 && username.text.startsWith('0')){
-        _userInvl = false;
-      }else{
-        _userInvl = true;
-      }
-      if(password.text.contains('@')){
-        _passInvl = false;
-      }else{
-        _passInvl = true;
-      }
-      if(_userInvl==false && _passInvl==false){
-        final id = DateTime.now().millisecondsSinceEpoch.toString();
-        databaseReference.child(id).set({
-          'SDT':username.text.toString(),
-          'email':password.text.toString()
-        });
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>MapScreen()));
-      }
+      _isLogin = true;
     });
+    String email = emailController.text;
+    String password = passwordController.text;
+    User? user = await _auth.signInWithEmailAndPassword(email, password);
+    setState(() {
+      _isLogin=false;
+    });
+    if(user!= null){
+      showToast(message: "User is successfully Sign In");
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen()));
+    }else{
+      print('An error occured');
+    }
   }
 }

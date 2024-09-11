@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:smartcar/login.dart';
+import 'package:smartcar/sign_page/login.dart';
 import 'package:smartcar/main.dart';
 import 'history.dart';
 class MapScreen extends StatefulWidget {
@@ -24,7 +25,7 @@ class _MapScreenState extends State<MapScreen> {
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
   Map<PolylineId, Polyline> polylines = {};
-  Map<MarkerId, Marker> markers = {}; // hê
+  Map<MarkerId, Marker> markers = {};
   void _onMapCreated(GoogleMapController controller) async {
     mapController = controller;
   }
@@ -47,7 +48,15 @@ class _MapScreenState extends State<MapScreen> {
       );
     }
   }
+  void addMarker(LatLng position, String id, BitmapDescriptor descriptor){
+    MarkerId markerId = MarkerId(id);
+    Marker marker =
+    Marker(markerId: markerId, icon: descriptor, position: position);
+    setState(() {
+      markers[markerId] = marker;
+    });
 
+  }
   @override
   void initState() {
     super.initState();
@@ -55,6 +64,8 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // đây là các biến lấy vị trí của người dùng
+    late GoogleMapController googleMapController;
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -70,7 +81,24 @@ class _MapScreenState extends State<MapScreen> {
                 // myLocationButtonEnabled: false,
                 initialCameraPosition: MapScreen._initialCameraPosition,
                 // lưu vị trí của nó vào vị trí ban đầu
+                onMapCreated: (GoogleMapController controller){
+                  googleMapController=controller;
+                },
               ),
+            ),
+            Positioned(
+                bottom: 10,
+                left: 10,
+                child: FloatingActionButton.extended(
+                  onPressed: () async {
+                    Position position = await _determinePosition();
+                    googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(position.latitude, position.longitude))));
+                    addMarker(LatLng(position.latitude, position.longitude), "Current Location", BitmapDescriptor.defaultMarkerWithHue(90));
+                    setState(() {});
+                  },
+                  label: Text("Current Location"),
+                  icon: Icon(Icons.location_history),
+                )
             ),
             Positioned(
               top: 10,
@@ -97,39 +125,39 @@ class _MapScreenState extends State<MapScreen> {
             )
           ],
         ),
-      bottomNavigationBar:
-      Container(
-        color: Colors.green,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 15),
-          child: GNav(
-              // selectedIndex: _selectedIndex,
-              gap: 10,
-              padding: EdgeInsets.all(8),
-              onTabChange: (index){
-                _onItemTapped(index,context);
-              },
-              backgroundColor: Colors.green,
-              color: Colors.white,
-              activeColor: Colors.white,
-              tabBackgroundColor: Colors.green.shade300,
-              tabs:[
-                GButton(
-                  icon: Icons.home,
-                  text: 'Home',
-                ),
-                GButton(
-                  icon: Icons.history,
-                  text: 'History',
-                ),
-                GButton(
-                  icon: Icons.logout,
-                  text: 'Log out',
-                ),
-              ]
-          ),
-        ),
-      ),
+       bottomNavigationBar:
+        Container(
+         color: Colors.green,
+         child: Padding(
+           padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 15),
+           child: GNav(
+               // selectedIndex: _selectedIndex,
+               gap: 10,
+               padding: EdgeInsets.all(8),
+               onTabChange: (index){
+                 _onItemTapped(index,context);
+               },
+               backgroundColor: Colors.green,
+               color: Colors.white,
+               activeColor: Colors.white,
+               tabBackgroundColor: Colors.green.shade300,
+               tabs:[
+                 GButton(
+                   icon: Icons.home,
+                   text: 'Home',
+                 ),
+                 GButton(
+                   icon: Icons.history,
+                   text: 'History',
+                 ),
+                 GButton(
+                   icon: Icons.logout,
+                   text: 'Log out',
+                 ),
+               ]
+           ),
+         ),
+       ),
     );
   }
 }
@@ -187,4 +215,24 @@ void _showLogoutDialog(BuildContext context){
       }
   );
 }
-
+// hàm lấy vị trí hiện tại
+Future<Position> _determinePosition() async{
+  bool serviceEnable;
+  LocationPermission permission;
+  serviceEnable = await Geolocator.isLocationServiceEnabled();
+  if(!serviceEnable){
+    return Future.error("Location services are disable");
+  }
+  permission = await Geolocator.checkPermission();
+  if(permission == LocationPermission.denied){
+    permission = await Geolocator.requestPermission();
+    if(permission == LocationPermission.denied){
+      return Future.error('Location permission denied');
+    }
+  }
+  if(permission == LocationPermission.deniedForever){
+    return Future.error('Location permission are permantly denied');
+  }
+  Position position = await Geolocator.getCurrentPosition();
+  return position;
+}

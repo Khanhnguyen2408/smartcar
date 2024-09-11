@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:smartcar/login.dart';
+import 'package:smartcar/sign_page/login.dart';
 import 'map_screen.dart';
 // lấy dữ liệu từ trên firebase để hiện lên trên thành list
 class RealTimeCRUDEdatabase extends StatefulWidget {
@@ -62,39 +62,39 @@ class _RealTimeDatabaseState extends State<RealTimeCRUDEdatabase>{
          ),
       ],
       ),
-      bottomNavigationBar:
-      Container(
-        color: Colors.green,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 15),
-          child: GNav(
-              selectedIndex: _selectedIndex,
-              gap: 10,
-              padding: EdgeInsets.all(8),
-              onTabChange: (index){
-                _onItemTapped(index,context);
-              },
-              backgroundColor: Colors.green,
-              color: Colors.white,
-              activeColor: Colors.white,
-              tabBackgroundColor: Colors.green.shade300,
-              tabs:[
-                GButton(
-                  icon: Icons.home,
-                  text: 'Home',
-                ),
-                GButton(
-                  icon: Icons.history,
-                  text: 'History',
-                ),
-                GButton(
-                  icon: Icons.logout,
-                  text: 'Log Out',
-                ),
-              ]
-          ),
-        ),
-      ),
+       bottomNavigationBar:
+       Container(
+         color: Colors.green,
+         child: Padding(
+           padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 15),
+           child: GNav(
+               selectedIndex: _selectedIndex,
+               gap: 10,
+               padding: EdgeInsets.all(8),
+               onTabChange: (index){
+                 _onItemTapped(index,context);
+               },
+               backgroundColor: Colors.green,
+               color: Colors.white,
+               activeColor: Colors.white,
+               tabBackgroundColor: Colors.green.shade300,
+               tabs:[
+                 GButton(
+                   icon: Icons.home,
+                   text: 'Home',
+                 ),
+                 GButton(
+                   icon: Icons.history,
+                   text: 'History',
+                 ),
+                 GButton(
+                   icon: Icons.logout,
+                   text: 'Log Out',
+                 ),
+               ]
+           ),
+         ),
+       ),
     );
   }
 }

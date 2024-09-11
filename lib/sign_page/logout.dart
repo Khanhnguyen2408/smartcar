@@ -1,10 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:smartcar/login.dart';
-import 'history.dart';
-import 'map_screen.dart';
+import 'package:smartcar/global/common/toast.dart';
+import 'package:smartcar/sign_page/login.dart';
+import '../history.dart';
+import '../map_screen.dart';
 class Logout extends StatefulWidget{
   const Logout ({super.key});
   @override
@@ -100,6 +102,8 @@ void _showLogoutDialog(BuildContext context){
             ),
             TextButton(
                 onPressed: (){
+                  FirebaseAuth.instance.signOut();
+                  showToast(message: "Successfully signed out");
                   Navigator.of(context).pop();
                   Navigator.push(
                       context,
