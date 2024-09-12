@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:smartcar/sign_page/login.dart';
 import 'package:smartcar/main.dart';
-import 'history.dart';
+import 'global/common/navigationdrawer.dart';
 class MapScreen extends StatefulWidget {
   @override
   State<MapScreen> createState() => _MapScreenState(); // tao bien state để lưu vị trí ban đầu local
@@ -67,11 +65,20 @@ class _MapScreenState extends State<MapScreen> {
     // đây là các biến lấy vị trí của người dùng
     late GoogleMapController googleMapController;
     return Scaffold(
+        drawer: NavBar(),
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.green,
-          title: const Center(
-              child: Text('Smart Car', style: TextStyle(fontSize: 30,color: Colors.white),)
+          title: Text('Smart Car', style: TextStyle(fontSize: 30,color: Colors.white),),
+          centerTitle: true,
+          leading: Builder(
+            builder: (context) => IconButton(
+              icon: Icon(Icons.menu),
+              color: Colors.white,
+              onPressed: () {
+                Scaffold.of(context).openDrawer(); // Mở Drawer thủ công
+              },
+            ),
           ),
         ),
         body: Stack(
@@ -122,98 +129,11 @@ class _MapScreenState extends State<MapScreen> {
                   label: Text('Tìm kiếm ở đây', style: TextStyle(
                       fontSize: 20, color: Color.fromRGBO(192, 192, 192, 0.5)),)
               ),
-            )
+            ),
           ],
         ),
-       bottomNavigationBar:
-        Container(
-         color: Colors.green,
-         child: Padding(
-           padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 15),
-           child: GNav(
-               // selectedIndex: _selectedIndex,
-               gap: 10,
-               padding: EdgeInsets.all(8),
-               onTabChange: (index){
-                 _onItemTapped(index,context);
-               },
-               backgroundColor: Colors.green,
-               color: Colors.white,
-               activeColor: Colors.white,
-               tabBackgroundColor: Colors.green.shade300,
-               tabs:[
-                 GButton(
-                   icon: Icons.home,
-                   text: 'Home',
-                 ),
-                 GButton(
-                   icon: Icons.history,
-                   text: 'History',
-                 ),
-                 GButton(
-                   icon: Icons.logout,
-                   text: 'Log out',
-                 ),
-               ]
-           ),
-         ),
-       ),
     );
   }
-}
-// ham de hien ra khi nhan Gnav
-void _onItemTapped (int index,BuildContext context ){
-  switch(index){
-    case 0:
-      Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context)=>MapScreen())
-      );
-      break;
-    case 1:
-      Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context)=>RealTimeCRUDEdatabase())
-      );
-      break;
-    case 2:
-      _showLogoutDialog(context);
-      break;
-  }
-}
-
-void _showLogoutDialog(BuildContext context){
-  showDialog(
-      context: context,
-      builder: (BuildContext context){
-        return AlertDialog(
-          title: Text('Xác nhận'),
-          content: Text('Bạn có chắc chắn muốn đăng xuất không '),
-          actions: [
-            TextButton(
-                onPressed: (){
-                  Navigator.of(context).pop();// dong dialog
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context)=>MapScreen())
-                  );
-                },
-                child: Text('Hủy')
-            ),
-            TextButton(
-                onPressed: (){
-                  Navigator.of(context).pop();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context)=>MyLoginScreen())
-                  );
-                },
-                child: Text('Đăng xuất')
-            )
-          ],
-        );
-      }
-  );
 }
 // hàm lấy vị trí hiện tại
 Future<Position> _determinePosition() async{

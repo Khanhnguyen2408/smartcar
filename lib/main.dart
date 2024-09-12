@@ -6,8 +6,6 @@ import 'package:smartcar/sign_page/login.dart';
 import 'package:smartcar/map_screen.dart';
 import 'detailscreen.dart';
 import 'package:firebase_core/firebase_core.dart';
-
-import 'dia_diem/map_screen_nam_dinh.dart';
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartcar/global/common/toast.dart';
 import 'package:smartcar/main.dart';
-import 'package:smartcar/map_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartcar/auth/auth.dart';
 import 'package:smartcar/sign_page/login.dart';
@@ -48,7 +47,7 @@ class _SignUpScreen extends State<SignUpScreen>{
                 keyboardType: TextInputType.text,
                 style: TextStyle(fontSize: 19,color: Colors.black),
                 decoration: InputDecoration(
-                    labelText: 'USERNAME',
+                    labelText: 'Họ và tên',
                     labelStyle: TextStyle(color: Colors.grey,fontSize: 15),
                 ),
               ),
@@ -133,7 +132,7 @@ class _SignUpScreen extends State<SignUpScreen>{
     String username =usernameController.text;
     String email = emailController.text;
     String password = passwordController.text;
-    User? user = await _auth.signUpWithEmailAndPassword(email, password);
+    User? user = await _auth.signUpWithEmailAndPassword(email, password, username);
     setState(() {
       _isSignUp=false;
     });

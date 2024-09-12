@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:smartcar/global/common/toast.dart';
-import 'package:smartcar/map_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartcar/auth/auth.dart';
 import 'package:smartcar/sign_page/signup.dart';
-
 import '../main.dart';
 class MyLoginScreen extends StatefulWidget{
   const MyLoginScreen ({super.key});

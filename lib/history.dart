@@ -3,9 +3,7 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:smartcar/sign_page/login.dart';
-import 'map_screen.dart';
+import 'global/common/navigationdrawer.dart';
 // lấy dữ liệu từ trên firebase để hiện lên trên thành list
 class RealTimeCRUDEdatabase extends StatefulWidget {
   const RealTimeCRUDEdatabase({super.key});
@@ -20,11 +18,20 @@ class _RealTimeDatabaseState extends State<RealTimeCRUDEdatabase>{
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.green[100],
+      drawer: NavBar(),
       appBar: AppBar(
         automaticallyImplyLeading: false,
       backgroundColor: Colors.green,
-      title: const Center(
-          child: Text('History', style: TextStyle(fontSize: 30,color: Colors.white),)
+        title: Text('History', style: TextStyle(fontSize: 30,color: Colors.white),),
+        centerTitle: true,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu),
+            color: Colors.white,
+            onPressed: () {
+              Scaffold.of(context).openDrawer(); // Mở Drawer thủ công
+            },
+          ),
         ),
       ),
       body: Column(children: [
@@ -62,92 +69,6 @@ class _RealTimeDatabaseState extends State<RealTimeCRUDEdatabase>{
          ),
       ],
       ),
-       bottomNavigationBar:
-       Container(
-         color: Colors.green,
-         child: Padding(
-           padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 15),
-           child: GNav(
-               selectedIndex: _selectedIndex,
-               gap: 10,
-               padding: EdgeInsets.all(8),
-               onTabChange: (index){
-                 _onItemTapped(index,context);
-               },
-               backgroundColor: Colors.green,
-               color: Colors.white,
-               activeColor: Colors.white,
-               tabBackgroundColor: Colors.green.shade300,
-               tabs:[
-                 GButton(
-                   icon: Icons.home,
-                   text: 'Home',
-                 ),
-                 GButton(
-                   icon: Icons.history,
-                   text: 'History',
-                 ),
-                 GButton(
-                   icon: Icons.logout,
-                   text: 'Log Out',
-                 ),
-               ]
-           ),
-         ),
-       ),
     );
   }
 }
-void _onItemTapped (int index,BuildContext context ){
-  switch(index){
-    case 0:
-      Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context)=>MapScreen())
-      );
-      break;
-    case 1:
-      Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context)=>RealTimeCRUDEdatabase())
-      );
-      break;
-    case 2:
-      _showLogoutDialog(context);
-      break;
-  }
-}
-void _showLogoutDialog(BuildContext context){
-  showDialog(
-      context: context,
-      builder: (BuildContext context){
-        return AlertDialog(
-          title: Text('Xác nhận'),
-          content: Text('Bạn có chắc chắn muốn đăng xuất không '),
-          actions: [
-            TextButton(
-                onPressed: (){
-                  Navigator.of(context).pop(); // dong dialog
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context)=>MapScreen())
-                  );
-                },
-                child: Text('Hủy')
-            ),
-            TextButton(
-                onPressed: (){
-                  Navigator.of(context).pop();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context)=>MyLoginScreen())
-                  );
-                },
-                child: Text('Đăng xuất')
-            )
-          ],
-        );
-      }
-  );
-}
-
