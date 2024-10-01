@@ -9,9 +9,9 @@ class FirebaseAuthService{
       User? user = credential.user; // luu bien dang nhap credential vao trong bien user
       //cap nhat displayName ()
       await user?.updateDisplayName(username);// cap nhat thuoc tinh displayname nho vao username va dung toan tu ? de chac rang dung no la null van khong bi loi
-      await user?.updateDisplayName(email);
+      await user?.verifyBeforeUpdateEmail(email);
       await user?.reload();//   de cap nhat nhung thay doi trong firebase
-      return _firebaseAuth.currentUser;//tra ve thong tin nguoi dung dang nhap
+      return _firebaseAuth.currentUser;//tra ve thong tin nguoi dung dang kí
     }on FirebaseAuthException catch(e){
       if(e.code=='email-already-in-use'){
         showToast(message: "The email address is already in use");

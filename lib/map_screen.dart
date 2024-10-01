@@ -24,6 +24,7 @@ class _MapScreenState extends State<MapScreen> {
   PolylinePoints polylinePoints = PolylinePoints();
   Map<PolylineId, Polyline> polylines = {};
   Map<MarkerId, Marker> markers = {};
+  Set<Marker> marker={};
   void _onMapCreated(GoogleMapController controller) async {
     mapController = controller;
   }
@@ -65,73 +66,82 @@ class _MapScreenState extends State<MapScreen> {
     // đây là các biến lấy vị trí của người dùng
     late GoogleMapController googleMapController;
     return Scaffold(
-        drawer: NavBar(),
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.green,
-          title: Text('Smart Car', style: TextStyle(fontSize: 30,color: Colors.white),),
-          centerTitle: true,
-          leading: Builder(
-            builder: (context) => IconButton(
-              icon: Icon(Icons.menu),
-              color: Colors.white,
-              onPressed: () {
-                Scaffold.of(context).openDrawer(); // Mở Drawer thủ công
+      drawer: NavBar(),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.green,
+        title: Text('Smart Car', style: TextStyle(fontSize: 30,color: Colors.white),),
+        centerTitle: true,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu),
+            color: Colors.white,
+            onPressed: () {
+              Scaffold.of(context).openDrawer(); // Mở Drawer thủ công
+            },
+          ),
+        ),
+      ),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: GoogleMap(
+              markers: marker,
+              myLocationButtonEnabled: false,
+              // myLocationButtonEnabled: false,
+              initialCameraPosition: MapScreen._initialCameraPosition,
+              // lưu vị trí của nó vào vị trí ban đầu
+              onMapCreated: (GoogleMapController controller){
+                googleMapController=controller;
               },
             ),
           ),
-        ),
-        body: Stack(
-          children: [
-            Positioned.fill(
-              child: GoogleMap(
-                // myLocationButtonEnabled: false,
-                initialCameraPosition: MapScreen._initialCameraPosition,
-                // lưu vị trí của nó vào vị trí ban đầu
-                onMapCreated: (GoogleMapController controller){
-                  googleMapController=controller;
-                },
-              ),
-            ),
-            Positioned(
-                bottom: 10,
-                left: 10,
-                child: FloatingActionButton.extended(
-                  onPressed: () async {
-                    Position position = await _determinePosition();
-                    googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(position.latitude, position.longitude))));
-                    addMarker(LatLng(position.latitude, position.longitude), "Current Location", BitmapDescriptor.defaultMarkerWithHue(90));
-                    setState(() {});
-                  },
-                  label: Text("Current Location"),
-                  icon: Icon(Icons.location_history),
-                )
-            ),
-            Positioned(
-              top: 10,
+          Positioned(
+              bottom: 10,
               left: 10,
-              right: 10,
-              child: ElevatedButton.icon(
-                  onPressed: () {
-                    showSearch(
-                        context: context,
-                        delegate: CustomSearch()
+              child: FloatingActionButton.extended(
+                onPressed: () async {
+                  Position position = await _determinePosition();
+                  googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(position.latitude, position.longitude),zoom: 14)));
+                  setState(() {
+                    marker.clear();
+                    marker.add(
+                        Marker(
+                            markerId: MarkerId("current location"),
+                            position: LatLng(position.latitude, position.longitude)
+                        )
                     );
-                  },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      padding: EdgeInsets.all(15),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)
-                      )
-                  ),
-                  icon: Icon(Icons.search, size: 30,),
-                  label: Text('Tìm kiếm ở đây', style: TextStyle(
-                      fontSize: 20, color: Color.fromRGBO(192, 192, 192, 0.5)),)
-              ),
+                  });
+                },
+                label: Text("Current Location"),
+                icon: Icon(Icons.location_history),
+              )
+          ),
+          Positioned(
+            top: 10,
+            left: 10,
+            right: 10,
+            child: ElevatedButton.icon(
+                onPressed: () {
+                  showSearch(
+                      context: context,
+                      delegate: CustomSearch()
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    padding: EdgeInsets.all(15),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)
+                    )
+                ),
+                icon: Icon(Icons.search, size: 30,),
+                label: Text('Tìm kiếm ở đây', style: TextStyle(
+                    fontSize: 20, color: Color.fromRGBO(192, 192, 192, 0.5)),)
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
     );
   }
 }

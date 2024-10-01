@@ -15,11 +15,11 @@ class _NavBarState extends State<NavBar>{
   String? _email;
   @override
   void initState(){
-    _loadUsername();// ham user name de lay thong tin user hien tai
+    _loadUserInfor();// ham user name de lay thong tin user hien tai
 
   }
   // ham lay thong tin nguoi dung
-  void _loadUsername(){
+  void _loadUserInfor(){
 // su dung firebase auth der lay thong tin user hien tai
     User? user =FirebaseAuthService().getCurrentUser();
     if(user!=null){
