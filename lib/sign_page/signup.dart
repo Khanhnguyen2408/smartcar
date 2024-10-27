@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartcar/common_page/lockscreen.dart';
 import 'package:smartcar/global/common/toast.dart';
 import 'package:smartcar/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -138,7 +139,7 @@ class _SignUpScreen extends State<SignUpScreen>{
     });
     if(user!= null){
       showToast(message: "User is successfully created");
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen()));
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>LockScreen()));
     }else{
       print( "An error occured");
     }

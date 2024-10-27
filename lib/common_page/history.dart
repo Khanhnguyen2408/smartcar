@@ -1,9 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'global/common/navigationdrawer.dart';
+import '../global/common/navigationdrawer.dart';
 // lấy dữ liệu từ trên firebase để hiện lên trên thành list
 class RealTimeCRUDEdatabase extends StatefulWidget {
   const RealTimeCRUDEdatabase({super.key});
@@ -22,7 +20,7 @@ class _RealTimeDatabaseState extends State<RealTimeCRUDEdatabase>{
       appBar: AppBar(
         automaticallyImplyLeading: false,
       backgroundColor: Colors.green,
-        title: Text('History', style: TextStyle(fontSize: 30,color: Colors.white),),
+        title: Text('Lịch sử', style: TextStyle(fontSize: 30,color: Colors.white),),
         centerTitle: true,
         leading: Builder(
           builder: (context) => IconButton(

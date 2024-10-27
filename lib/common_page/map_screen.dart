@@ -3,7 +3,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:smartcar/main.dart';
-import 'global/common/navigationdrawer.dart';
+import '../global/common/navigationdrawer.dart';
 class MapScreen extends StatefulWidget {
   @override
   State<MapScreen> createState() => _MapScreenState(); // tao bien state để lưu vị trí ban đầu local

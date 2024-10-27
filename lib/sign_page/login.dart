@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartcar/common_page/lockscreen.dart';
 import 'package:smartcar/global/common/toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartcar/auth/auth.dart';
@@ -122,7 +123,7 @@ class _MyLoginScreen extends State<MyLoginScreen>{
     });
     if(user!= null){
       showToast(message: "User is successfully Sign In");
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen()));
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>LockScreen()));
     }else{
       print('An error occured');
     }

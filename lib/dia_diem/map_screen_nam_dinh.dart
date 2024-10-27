@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_database/firebase_database.dart';
-import '../map_screen.dart';
+import '../common_page/map_screen.dart';
 class MapScreen1 extends StatefulWidget {
   @override
   State<MapScreen1> createState() => _MapScreenState(); // tao bien state để lưu vị trí ban đầu local

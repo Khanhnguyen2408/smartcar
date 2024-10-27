@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smartcar/auth/auth.dart';
-import 'package:smartcar/map_screen.dart';
-import '../../history.dart';
+import 'package:smartcar/common_page/map_screen.dart';
+import '../../common_page/history.dart';
+import '../../common_page/info.dart';
 import '../../sign_page/login.dart';
 class NavBar extends StatefulWidget{
   @override
@@ -69,22 +70,29 @@ class _NavBarState extends State<NavBar>{
       children: [
         ListTile(
           leading: const Icon(Icons.home),
-          title: Text("Home"),
+          title: Text("Trang chủ"),
           onTap: (){
             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>MapScreen()));
           },
         ),
         ListTile(
           leading: const Icon(Icons.history),
-          title: Text("History"),
+          title: Text("Lịch sử"),
           onTap: (){
             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>RealTimeCRUDEdatabase()));
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.info),
+          title: Text("Hướng dẫn"),
+          onTap: (){
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>Information()));
           },
         ),
         const Divider(color: Colors.black54,),
         ListTile(
           leading: const Icon(Icons.logout),
-          title: Text("Log Out"),
+          title: Text("Đăng xuất"),
           onTap: (){
             _showLogoutDialog(context);
           },

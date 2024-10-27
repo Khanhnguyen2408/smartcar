@@ -3,9 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:smartcar/sign_page/login.dart';
-import 'package:smartcar/map_screen.dart';
-import 'detailscreen.dart';
+import 'package:smartcar/common_page/map_screen.dart';
+import 'common_page/detailscreen.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+import 'common_page/lockscreen.dart';
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
